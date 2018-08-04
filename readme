@@ -1,0 +1,146 @@
+添加PageBean
+完善DAO层+分表+索引
+添加biz层，将action跳转（页面返回内容）和业务逻辑（即biz，调用基础的dao）分开
+RBAC
+query中fetchlistby添加对结果object==null的验证
+token修改（防止重复申请）
+数据库出错要写入errormsgs中
+将输入Map验证后转换成想要的格式，模块通用化
+使用Map进行insert, update(提高效率，不用全部更新)
+行车日志对应的信息（车辆）删除后，是否有必要删除所有的行车日志
+fetchBY 定义某个类可以fetch哪些关联类,区别是否是分表类，并添加对分表类的支持,将枚举分离开来
+dao中完善operater(表操作历史记录)
+
+托运方要统计什么
+返回给客户端的msg可以定义在一个类里面
+审核不通过司机没提交却可以直接一审
+
+测试整个流程
+再测试删掉基本信息后哪里会出错  哪些地方的查询需要吧datastatus去掉,删除车辆驾驶员托运方承运方时，是不是还需要删去其他信息（除了统计信息，行车日志）比如订单？
+获取回执单(收货方直接给托运方，和承运方无关，先放一放)
+硬件平台的权限验证
+装货卸货请求还是司机来请求
+
+前台：
+承运方要看到自己的承运方统计信息
+地址路线表示问题，如何分出省市区（前台搞定）
+设备管理商登录，打印表单
+
+硬件平台：
+硬件改成不需要推送，一直在上传行车日志
+硬件不会自动上锁
+硬件锁状态解析错误，0开1闭
+硬件上传异常存在问题haswarn=0
+硬件上传异常不应该只在装货后卸货前
+硬件收到装货完成和是卸货完成后要自动上锁，派发后也要自动上锁
+
+政府还要改
+数据库集群，服务器集群
+
+总结：
+1:
+好像隔断时间会重置，也许是重启系统会重置
+mysql packet for query is too large (*>*) you can change this value on the ...
+http://blog.csdn.net/sinat_25926481/article/details/51339436
+mysql -u root -p
+show VARIABLES like '%max_allowed_packet%';
+SET GLOBAL max_allowed_packet=16*1024*1024;
+exit
+service mysql restart
+
+/etc/mysql/my.cnf  
+貌似会遭到黑客攻击，所以修改密码
+
+2:
+数据库设计三范式 FN1 FN2 FN3
+
+3：
+hibernate 注解  (xdoclet?)
+hibernate 数据验证 vaildation
+
+4:
+利用expception把错误信息传递出来，极大的利于调试
+
+5：
+order lock year month为数据库保留字,但hibernate中又不用考虑使用tablename.`year`，自动生成
+
+6：
+兄弟怕是用了net.sf.fjep.fatjar_0.0.31这个版本或者以下
+用net.sf.fjep.fatjar_0.0.32这个版本的可以装上
+下载地址
+http://download.csdn.net/detail/u014175572/8772997
+贴到eclipse的plugins的目录下，然后用cmd进到eclipse当前的目录下
+用命令eclipse -clean 启动eclipse就好了
+
+7：
+去掉delete hql语句中的类
+
+8：
+可以用hibernate执行sql语句
+
+9：
+URLEncoder最外面套，而且一定要套
+
+10：
+查询数据库时，比如sid，定义为bigint，用原生sql语句查询得到的是BigInteger类型，而用hql查询得到的是Long
+
+11:
+sql hql千万，数字不能加''，字符串一定要加''
+
+12:
+sql语句的limit要放在order之后
+
+13：
+考虑到数据的关联性，删除数据只是修改数据标志位，是否已经删除为已删除，而不是真正的删除数据（软删除）
+
+14:
+session.createQuery("delete Order where sid = 111");
+
+15:
+用hibernate 执行原生的sql，进行join查询时，不能用select *，会引起字段重复，可以用select {tablea.*}, {tableb.*}。。。
+用hibernate 不设计many-to-one,one-to-many，使用原生语句进行join查询，可以参考：http://www.cnblogs.com/xiaoluo501395377/p/3378355.html
+cascade级联创建可以理解。级联更新是指update（object）其中一个object，会查看另一个object有没有更新。级联删除也可以理解。级联刷新是什么意思
+mappedBy后面跟属性名而不是数据库字段名
+
+16:
+服务器安全问题，敏感字段加密存储，密码加盐后使用散列存储，token添加时效，网络传输可以加密（公钥私钥），登录使用https
+
+17：
+使用netty pipechannel 将websockethandler和httphandler分开，（考虑如何加入大文件上传下载模块和ftp模块）
+
+18：
+学习java的正则表达式
+
+19:
+查询最好排序后返回
+
+20:
+异常一定要catch或者throw。最外面套一层catch，不存异常进数据库，方便调试
+
+21:
+hibernate如果启用缓存，那么在使用nativesql执行插入时，数据库会插入两条记录，应为hibernate在执行nativesql时不使用缓存（也有一说是在执行nativesql插入主键是代码生成的对象时才会出现这种状况），
+在代码执行时会直接插入一条数据，当tx.commit时，缓存中的新建对象又会再次插入到数据库中，所以在使用hibernate执行nativesql语句时，在tx.commit()以前需要session.clear()一下。那么问题来了，如果
+代码中同时使用了nativesql和session.save来执行插入，很容易导致nativesql执行时的session.clear()操作是session.save()无效，应为session.save.update都是先保存在缓存中的。
+解决方法需要试验，几个思路：
+a.只使用一种方式插入对象
+b.抛弃hibernate
+c.设置hibernate不使用缓存
+d.是不是只有在nativesql执行主键是代码生成的对象时才会有这种现象，如果是，探求解决方法（是不是代码中sid的注释方法不正确）
+e.在session.save.update完结后，跟一个session.flush()代码
+f.在执行完nativesql后session.clear以后再执行session.save.update，最后tx.commit
+
+22:
+Class<?> 的传递不能进行反射，如果反射会反射到java.lang.Object
+
+23:
+反射时，field.getModifier()应该使用musk的形式进行判断，而不是==
+
+24:
+netty中http分成了httprequest和httpcontent，其实是同一个FullHttpRequest对象转化而来，即channel只read一次
+
+25：
+netty的pipelinehandler的执行顺序示意：
+handler1-->handler2-->handler3
+则执行顺序为
+handler1.channelread()-->channel2.channelread()-->channel3.channelread()-->
+handler1.readcomplete()<--channel2.readcomplete()<--channel3.readcomplete()

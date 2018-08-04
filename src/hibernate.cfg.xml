@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration SYSTEM
+	"http://www.hibernate.org/dtd/hibernate-configuration">
+
+<hibernate-configuration>
+	<session-factory>
+		<property name="hibernate.connection.driver_class">
+			com.mysql.jdbc.Driver
+		</property>
+		<property name="hibernate.connection.url">
+			JDBC:mysql://localhost:3306/scsywh?useSSL=true&amp;useUnicode=true&amp;characterEncoding=utf8
+		</property>
+		<property name="hibernate.connection.username">
+			root
+		</property>
+		<property name="hibernate.connection.password">
+			abCD1234
+		</property>
+		<property name="hibernate.dialect">
+			org.hibernate.dialect.MySQLInnoDBDialect
+		</property>
+		<property name="hibernate.c3p0.min_size">10</property>
+		<property name="hibernate.c3p0.max_size">300</property>
+		<property name="hibernate.c3p0.timeout">300</property>
+		<property name="hibernate.c3p0.max_statements">50</property>
+		<property name="hibernate.c3p0.idle_test_period">3000</property>
+
+		<property name="hibernate.show_sql">false</property>
+		<property name="hibernate.format_sql">true</property>
+		
+		<mapping class="com.Entitys.ClientRequest" />
+		<mapping class="com.Entitys.ErrorMsgs" />
+		<mapping class="com.Entitys.Lock.Entity.Lock" />
+		<mapping class="com.Entitys.Trucklog.Entity.TruckLog" />
+		<mapping class="com.Entitys.Trucklog.Entity.LastTruckLog" />
+		<mapping class="com.Entitys.Order.Entity.Order" />
+		<mapping class="com.Entitys.Fareform.Entity.FareForm" />
+		<mapping class="com.Entitys.TableChange" />
+		<mapping class="com.Entitys.FileUpload.Entity.FileStore" />
+		<mapping class="com.Entitys.Truck.Entity.TruckArchives" />
+		<mapping class="com.Entitys.Truck.Entity.TruckMaintain" />
+		<mapping class="com.Entitys.Warn.Entity.Warn" />
+		<mapping class="com.Entitys.Statistics.TruckMaintainStatistics" />
+		<mapping class="com.Entitys.Statistics.OrderMonthStatistics" />
+		<mapping class="com.Entitys.Statistics.OrderYearStatistics" />
+		<mapping class="com.Entitys.Statistics.WarnMonthStatistics" />
+		<mapping class="com.Entitys.Statistics.WarnYearStatistics" />
+		<mapping class="com.Entitys.Truck.Entity.Truck" />
+		<mapping class="com.Entitys.Trailer.Entity.Trailer" />
+		<mapping class="com.Entitys.Buyer.Entity.Buyer" />
+		<mapping class="com.Entitys.Seller.Entity.Seller" />
+		<mapping class="com.Entitys.Admin.Entity.Admin" />
+		<mapping class="com.Entitys.Driver.Entity.Driver" />
+		<mapping class="com.Entitys.Escort.Entity.Escort" />
+		<mapping class="com.Entitys.Government.Entity.Government" />
+		<mapping class="com.Entitys.Manufacturer.Entity.Manufacturer" />
+		<mapping class="com.Entitys.Product.Entity.Product" />
+		<mapping class="com.Entitys.Route.Entity.Route" />
+		<mapping class="com.Entitys.User.Entity.LoginInfo" />
+		<mapping class="com.Entitys.Corporation.Entity.Corporation" />
+		<mapping class="com.Entitys.Exam.Entity.Exam" />
+		<mapping class="com.Entitys.Exam.Entity.ScoreHistory" />
+		<mapping class="com.Entitys.Document.Entity.Document" />
+		<mapping class="com.Entitys.Document.Entity.ReadDurHistory" />
+		<mapping class="com.Entitys.Document.Entity.TotalDur" />
+	</session-factory>
+</hibernate-configuration>
