@@ -13,7 +13,7 @@ public class Main {
 //		long sid = snowFlake.nextId();
 //		System.err.println(sid);
 //		System.err.println(String.valueOf(sid).length());
-		System.out.println("Version 1.1808011928");
+		System.out.println("Version 1.1808041930");
 		int port = 85;
 		if(args.length>0)
 		{
